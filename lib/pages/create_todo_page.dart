@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/domain/todo.dart';
+import 'package:mobile/widgets/todo_form.dart';
 
 class CreateTodoPage extends StatefulWidget {
   const CreateTodoPage({Key key}) : super(key: key);
@@ -9,8 +10,7 @@ class CreateTodoPage extends StatefulWidget {
 }
 
 class _CreateTodoPageState extends State<CreateTodoPage> {
-  String _title;
-  String _description;
+  var todo = Todo();
 
   @override
   Widget build(BuildContext context) {
@@ -21,64 +21,16 @@ class _CreateTodoPageState extends State<CreateTodoPage> {
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: SingleChildScrollView(
-          child: Form(
-            autovalidateMode: AutovalidateMode.onUserInteraction,
-            child: Column(
-              children: [
-                TextFormField(
-                  autofocus: true,
-                  validator: (value) {
-                    if (value?.isEmpty ?? true) {
-                      return "Can't be empty";
-                    }
-                    return null;
-                  },
-                  textInputAction: TextInputAction.next,
-                  decoration: InputDecoration(
-                    labelText: 'Title',
-                    hintText: 'Cleanup the house',
-                    border: OutlineInputBorder(),
-                  ),
-                  onChanged: (title) {
-                    _title = title;
-                  },
-                ),
-                const SizedBox(height: 8),
-                TextFormField(
-                  maxLines: null,
-                  textInputAction: TextInputAction.done,
-                  decoration: InputDecoration(
-                    labelText: 'Description',
-                    hintText:
-                        'I should take out the trash and clean the dog poop',
-                    border: OutlineInputBorder(),
-                  ),
-                  onChanged: (description) {
-                    _description = description;
-                  },
-                ),
-                Builder(
-                  builder: (context) {
-                    return SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        onPressed: () {
-                          if (Form.of(context).validate()) {
-                            Form.of(context).save();
-                            final todo = Todo(
-                              title: _title,
-                              description: _description ?? '',
-                            );
-                            Navigator.of(context).pop(todo);
-                          }
-                        },
-                        child: Text('Save it'),
-                      ),
-                    );
-                  },
-                ),
-              ],
-            ),
+          child: TodoForm(
+            onTitleChanged: (title) {
+              todo = todo.copyWith(title: title);
+            },
+            onDescriptionChanged: (description) {
+              todo = todo.copyWith(description: description);
+            },
+            onFormValidated: () {
+              Navigator.of(context).pop(todo);
+            },
           ),
         ),
       ),
