@@ -1,22 +1,32 @@
 import 'package:flutter/material.dart';
-import 'package:mobile/todo.dart';
+import 'package:mobile/domain/todo.dart';
 
-class CreateTodoPage extends StatefulWidget {
-  const CreateTodoPage({Key key}) : super(key: key);
+class EditTodoPage extends StatefulWidget {
+  const EditTodoPage({
+    Key key,
+    @required this.todo,
+  }) : super(key: key);
+
+  final Todo todo;
 
   @override
-  _CreateTodoPageState createState() => _CreateTodoPageState();
+  _EditTodoPageState createState() => _EditTodoPageState();
 }
 
-class _CreateTodoPageState extends State<CreateTodoPage> {
-  String _title;
-  String _description;
+class _EditTodoPageState extends State<EditTodoPage> {
+  Todo todo;
+
+  @override
+  void initState() {
+    super.initState();
+    todo = widget.todo;
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Create todo'),
+        title: Text('Edit todo'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -26,6 +36,7 @@ class _CreateTodoPageState extends State<CreateTodoPage> {
             child: Column(
               children: [
                 TextFormField(
+                  initialValue: todo.title,
                   autofocus: true,
                   validator: (value) {
                     if (value?.isEmpty ?? true) {
@@ -40,11 +51,12 @@ class _CreateTodoPageState extends State<CreateTodoPage> {
                     border: OutlineInputBorder(),
                   ),
                   onChanged: (title) {
-                    _title = title;
+                    todo = todo.copyWith(title: title);
                   },
                 ),
                 const SizedBox(height: 8),
                 TextFormField(
+                  initialValue: todo.description,
                   maxLines: null,
                   textInputAction: TextInputAction.done,
                   decoration: InputDecoration(
@@ -54,7 +66,7 @@ class _CreateTodoPageState extends State<CreateTodoPage> {
                     border: OutlineInputBorder(),
                   ),
                   onChanged: (description) {
-                    _description = description;
+                    todo = todo.copyWith(description: description);
                   },
                 ),
                 Builder(
@@ -65,10 +77,6 @@ class _CreateTodoPageState extends State<CreateTodoPage> {
                         onPressed: () {
                           if (Form.of(context).validate()) {
                             Form.of(context).save();
-                            final todo = Todo(
-                              title: _title,
-                              description: _description ?? '',
-                            );
                             Navigator.of(context).pop(todo);
                           }
                         },

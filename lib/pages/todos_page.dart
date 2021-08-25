@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/controllers/todos_controller.dart';
 
 import 'create_todo_page.dart';
 import 'edit_todo_page.dart';
-import 'todos_controller.dart';
 
 class TodosPage extends StatefulWidget {
   const TodosPage({Key key}) : super(key: key);
